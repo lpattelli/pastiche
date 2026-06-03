@@ -27,12 +27,9 @@ convert.py
 import numpy as np
 from scipy.constants import R, N_A
 
-def p2z(p, p0=1013.):
-    '''
-    Converte da pressione in hPa a quota in km.
-    Assume pressione a terra di 1013 hPa.
-    '''
-    z = -16.*np.log10(p/p0)
+def p2z(p, p0=1013.0):
+    """Convert pressure in hPa to altitude in km, assuming sea-level pressure p0."""
+    z = -16.0 * np.log10(p / p0)
     return z
 
 
@@ -78,8 +75,7 @@ def mmr2vmr(MMR, species):
 
 def n_density2vmr(C, T, p):
     '''
-    Converte da number density o number concentration [molecules cm**-3] a vmr
-    see: /home/bel8/Nextcloud/Documents/sci/Ilmakemia2012-2-composition.pdf
+    Convert number density or number concentration [molecules cm**-3] to VMR.
 
     C [molecules cm**-3]
     T [K]

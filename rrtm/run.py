@@ -26,7 +26,6 @@ rrtm/run.py
 
 import logger
 import os
-import pdb
 import subprocess
 import contextlib
 import tempfile
@@ -34,8 +33,7 @@ import rrtm.input
 import rrtm.output
 
 
-RRTM_EX = '/content/RRTM_LW/rrtm_v3.3.1_linux_ifx'
-# RRTM_EX = '/home/bel8/src/RRTMG_LW/rrtmg_lw_v5.00_linux_intel'
+RRTM_EX = os.environ.get('PASTICHE_RRTM_EXE', '/content/RRTM_LW/rrtm_v3.3.1_linux_ifx')
 logger.info('using %s as RRTM executable', RRTM_EX)
 
 def run_and_read_results(atm, cld=None, keep_temp_files=False):
@@ -51,6 +49,11 @@ def run_and_read_results(atm, cld=None, keep_temp_files=False):
         except FileNotFoundError:
             pass
 
+        if not os.path.exists(RRTM_EX):
+            raise FileNotFoundError(
+                f'RRTM executable not found: {RRTM_EX}. '
+                'Set PASTICHE_RRTM_EXE to the path of the RRTM_LW executable.'
+            )
         os.symlink(RRTM_EX, os.path.join(tmpdirname, 'rrtm'))
         rrtm.input.write(atm, infile_path=os.path.join(tmpdirname,'INPUT_RRTM'),
                          cld=cld, use_pressure=True)
@@ -58,9 +61,7 @@ def run_and_read_results(atm, cld=None, keep_temp_files=False):
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=tmpdirname, check=True)
         if result.stderr != b'':
             logger.error(result)
-            pdb.set_trace()
-            #continue
-            raise StopIteration
+            raise RuntimeError('RRTM executable wrote to stderr; see log for details')
         # print(os.listdir(tmpdirname))
         try:
             X = rrtm.output.read(datafile_path=os.path.join(tmpdirname,'OUTPUT_RRTM'))

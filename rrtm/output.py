@@ -65,9 +65,9 @@ def read(datafile_path="OUTPUT_RRTM"):
                     raise Exception('Unrecognised file format', f'line="{x}", len(x)={len(x)}')
                 try:
                     l = int(p[0])
-                except (ValueError,  IndexError):
-                    pass
-                    print(f'line="{x}", len(x)={len(x)}')
+                except (ValueError, IndexError):
+                    logger.debug('Skipping unparsed output line: %r (len=%d)', x, len(x))
+                    continue
                 else:
                     b.level.append(l)
                     b.pressure.append(__get_float(p[1]))

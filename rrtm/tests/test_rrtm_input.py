@@ -4,27 +4,24 @@ Claudio Belotti (CNR-INO, Italy), claudio.belotti@cnr.it
 Lorenzo Pattelli (INRiM, Italy), l.pattelli@inrim.it
 
 
-    This file is part of Nome-Programma.
+    This file is part of PASTICHE.
 
-    Nome-Programma is free software: you can redistribute it and/or modify
+    PASTICHE is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Nome-Programma is distributed in the hope that it will be useful,
+    PASTICHE is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Nome-Programma.  If not, see <http://www.gnu.org/licenses/>.
+    along with PASTICHE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-rrtm/test/test_rrtm_input.py
+rrtm/tests/test_rrtm_input.py
 """
-
-import sys
-sys.path.append("/home/bel8/dev/rrtm")
 
 import unittest
 from unittest.mock import patch, mock_open
@@ -46,7 +43,7 @@ class TestWriteRRTMInputFile(unittest.TestCase):
                  [1.892E-01, 1.430E-01, 1.430E-01],
                  [1.836E+00, 1.700E+00, 1.700E+00]]
         
-        self.atm = rrtm.input.Atmosphere('SPECTRE ICRCCM experiment profile sonde, ozone sonde, raman, RASS', z, p, 'A', T, 'B', Ts, gases, 'CAAAAA6', semiss=1.)
+        self.atm = rrtm.input.Atmosphere('SPECTRE ICRCCM experiment profile sonde, ozone sonde, raman, RASS', z, p, 'A', T, 'B', Ts, gases, 'CAAAAA6', 6, semiss=1.)
         fake_file_path = "fake/file/path"
         with patch('rrtm.input.open', mock_open()) as mocked_file:
             rrtm.input.write(self.atm, fake_file_path)
@@ -55,7 +52,7 @@ class TestWriteRRTMInputFile(unittest.TestCase):
             mocked_file.assert_called_once_with(fake_file_path, 'w')
             self.magic_mock = mocked_file()
             # assert if write(content) was called from the file opened
-            # in another words, assert if the specific content was written in file
+            # in other words, assert if the specific content was written in file
             #mocked_file().write.assert_called_once_with(atm)
     
 
@@ -67,7 +64,7 @@ class TestWriteRRTMInputFile(unittest.TestCase):
         n_levels = len(self.atm.vmolk[0])
         for ii in range(n_levels):
             for jj in range(n_gases):
-                a_call_args = a_call_list[ii*8+5+jj].args[0]
+                a_call_args = a_call_list[7 + ii * (n_gases + 2) + jj].args[0]
                 self.assertEqual(self.atm.vmolk[jj][ii], float(a_call_args))
         
         for ii in range(3):

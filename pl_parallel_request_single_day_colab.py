@@ -117,7 +117,7 @@ def pl(d):
     if not os.path.isfile(target):
         c.retrieve(dataset, request, target)
     else:
-        print(target + " exists: skippinpg")
+        print(target + " exists: skipping")
 
 
 if __name__ == "__main__":
@@ -126,7 +126,8 @@ if __name__ == "__main__":
     python3 pl_parallel_request_single_day.py ./config/las_vegas.json
     """
 
-    config = json.load(open(sys.argv[1]))
+    with open(sys.argv[1]) as config_file:
+        config = json.load(config_file)
     for month in range(1, 13):
         os.makedirs(f"./in/era5/{config['label']}/TMY/{month:02}", exist_ok=True)
 

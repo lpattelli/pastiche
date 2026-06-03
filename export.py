@@ -105,7 +105,7 @@ def __copy_nc(src, dst):
 
 def __append_history(src, dst):
     # append history information
-    now = datetime.now().astimezone().strftime("%Y-%m-%d %H:%m:%S %Z")
+    now = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
     history = f"{now} generated with PASTICHE {VERSION}: export.nc\n"
     history += src.getncattr("history")
     dst.setncattr("history", history)
@@ -153,7 +153,7 @@ def __add_relative_humidity(src, dst):
         "r", "i2", (name_of_time_dimension, "latitude", "longitude"), fill_value=-32767
     )
     r.long_name = (
-        "Relative humidity calculated from 2m-temperature and 2m-dewpoint temperature"
+        "Relative humidity calculated from 2 m temperature and 2 m dewpoint temperature"
     )
     r.standard_name = "relative humidity"
     r.units = "%"

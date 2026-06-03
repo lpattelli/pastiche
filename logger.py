@@ -40,13 +40,13 @@ logger.setLevel(logging.INFO)
 
 formatter = logging.Formatter(FMT_MESSAGE, datefmt=FMT_DATETIME)
 
-# Logging to console.
-console = logging.StreamHandler()
-console.setFormatter(formatter)
-logger.addHandler(console)
+if not logger.handlers:
+    # Logging to console.
+    console = logging.StreamHandler()
+    console.setFormatter(formatter)
+    logger.addHandler(console)
 
-# Logging to file.
-#
-file = logging.FileHandler(datetime.now().strftime("pastiche_%Y%m%d-%H%M%S.log"))
-file.setFormatter(formatter)
-logger.addHandler(file)
+    # Logging to file.
+    file_handler = logging.FileHandler(datetime.now().strftime("pastiche_%Y%m%d-%H%M%S.log"))
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)

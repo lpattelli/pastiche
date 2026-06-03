@@ -1,0 +1,8 @@
+# Keep line endings stable across platforms.
+* text=auto eol=lf
+
+# Text scientific input files should remain diffable and use LF line endings.
+*.DAT text eol=lf
+
+# Binary scientific data files are tracked as-is.
+*.nc -text

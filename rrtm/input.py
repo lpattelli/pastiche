@@ -32,7 +32,11 @@ import logging
 logger = logging.getLogger("rrtm:input")
 logger.setLevel(logging.WARNING)
 
-Atmosphere = namedtuple("Atmosphere", "description z p jcharp T jchart Ts vmolk jchark model semiss")
+Atmosphere = namedtuple(
+    "Atmosphere",
+    "description z p jcharp T jchart Ts vmolk jchark model semiss",
+    defaults=(1, 1.0),
+)
 Cloud = namedtuple("Cloud", "inflag layers cf cwp fracice radice")
 
 def atmospheric_model(latitude, date):
@@ -41,12 +45,13 @@ def atmospheric_model(latitude, date):
     # 3  midlatitude winter model
     # 4  subarctic summer model
     # 5  subarctic winter model
-    issummer = date.month>4 and date.month<=10
-    if latitude<0: issummer = not issummer
+    issummer = date.month > 4 and date.month <= 10
+    if latitude < 0:
+        issummer = not issummer
     alt = abs(latitude)
-    if alt<=30:
+    if alt <= 30:
         model = 1
-    elif alt<=60:
+    elif alt <= 60:
         model = 2 if issummer else 3
     else:
         model = 4 if issummer else 5
@@ -71,11 +76,11 @@ def write(atm, infile_path="./MY_INPUT_RRTM", cld=None, use_pressure=False):
         logger.debug('semiss: %s', semiss)
     elif len(atm.semiss)==1:
         iemis = '1' # each band has the same emissivity
-        semiss = atm.semiss[0]
+        semiss = [atm.semiss[0]]
         logger.debug('iemis: %s', iemis)
         logger.debug('semiss: %s', semiss)
     elif len(atm.semiss)==16:
-        iemis = '2' # each band has the same emissivity
+        iemis = '2' # band-dependent surface emissivity
         semiss = atm.semiss
         logger.debug('iemis: %s', iemis)
         logger.debug('semiss: %s', semiss)
@@ -86,17 +91,17 @@ def write(atm, infile_path="./MY_INPUT_RRTM", cld=None, use_pressure=False):
     if cld is None:
         icld = '0'
     else:
-        # icld = '1' # random overlap assmption
-        icld = '2' # maximum/random overlap assmption
+        # icld = '1' # random overlap assumption
+        icld = '2' # maximum/random overlap assumption
         wdir = os.path.dirname(infile_path)        
         __write_in_cld(cld, in_cld_path=os.path.join(wdir,'IN_CLD_RRTM'))
         
     if use_pressure:
-        ibmax = -1*len(atm.p) # <0 bounduaries to be specified in pressure [mbars]
+        ibmax = -1*len(atm.p) # <0 boundaries to be specified in pressure [mbars]
         upper_layers = [] #[0.5, 0.2, 0.1, 0.05, 0.02]
         immax = -1*(len(atm.p) + len(upper_layers))
     else:
-        ibmax = len(atm.z) # >0 bounduaries in [km]
+        ibmax = len(atm.z) # >0 boundaries in [km]
         upper_layers = range(round(atm.z[-1]+1), 100, 10)
         immax = len(atm.z) +len(upper_layers)
         
@@ -127,7 +132,7 @@ def write(atm, infile_path="./MY_INPUT_RRTM", cld=None, use_pressure=False):
             f.write(f'{0:10d}{0:10d}{0:10d}{0:10d}{0:10d}\n') # R3.3A
         else:
             # either pressure or altitude levels
-            # depending on ibmax<o or >0
+            # depending on whether ibmax < 0 or > 0
             for ii in range(0, len(zbnd), 8):
                 f.writelines([f'{z:10.3E}' for z in zbnd[ii:ii+8]]) # R3.3B
                 f.write('\n')
@@ -182,7 +187,7 @@ if __name__ == "__main__":
     m_atm = np.loadtxt("my_iccrim_atm")
     gases = [m_atm[:,mm] for mm in range(m_atm.shape[1])]
     
-    atm = Atmosphere('SPECTRE ICRCCM experiment profile sonde, ozone sonde, raman, RASS', zpt[:,0], zpt[:,1], 'A', zpt[:,2], 'B', 290.93, gases, 'CAAAAA6')
+    atm = Atmosphere('SPECTRE ICRCCM experiment profile sonde, ozone sonde, raman, RASS', zpt[:,0], zpt[:,1], 'A', zpt[:,2], 'B', 290.93, gases, 'CAAAAA6', 6)
     write(atm)
     
     

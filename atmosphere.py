@@ -107,9 +107,12 @@ def prepare_atmosphere(
         T = np.flipud(T)
         q = np.flipud(q)
         o3 = np.flipud(o3)
-        cf = np.flipud(cf)
-        clwc = np.flipud(clwc)
-        ciwc = np.flipud(ciwc)
+        if cf is not None:
+            cf = np.flipud(cf)
+        if clwc is not None:
+            clwc = np.flipud(clwc)
+        if ciwc is not None:
+            ciwc = np.flipud(ciwc)
 
     # converto a vmr per via di bug di RTTMG
     # vedi https://github.com/AER-RC/RRTMG_LW/issues/14

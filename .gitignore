@@ -1,0 +1,41 @@
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments and local configuration
+.env
+.venv/
+venv/
+.cdsapirc
+
+# Runtime outputs and logs
+out/
+logs/
+*.log
+*.tmp
+*_rrtm/
+INPUT_RRTM
+OUTPUT_RRTM
+TAPE6
+
+# Editor and OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Packaging and test coverage
+build/
+dist/
+*.egg-info/
+.coverage
+htmlcov/
+
+# Notebook checkpoints and swap/backup files
+.ipynb_checkpoints/
+*.bak
+*.swp
+*.swo

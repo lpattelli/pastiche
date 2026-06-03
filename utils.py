@@ -47,9 +47,12 @@ def saturation_vapor_pressure(temperature):
 
 
 def __normalise_lon(longitude):
-    normalised_ln = longitude
-    normalised_ln[longitude >= 180.0] -= 360
-    return normalised_ln
+    """Return longitude(s) normalized from [0, 360) to [-180, 180)."""
+    longitude_array = np.asarray(longitude)
+    normalised = np.where(longitude_array >= 180.0, longitude_array - 360.0, longitude_array)
+    if np.isscalar(longitude):
+        return normalised.item()
+    return normalised
 
 
 def __calc_emissivity(Fsd, Fsn, Ts):

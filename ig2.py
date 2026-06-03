@@ -175,7 +175,7 @@ class IG2(object):
 
 
 if __name__ == "__main__":
-    fname = "input/ig2/2012/april/IG_CO2.DAT"
+    fname = "in/ig2/2012/april/IG_CO2.DAT"
     my_ig2 = IG2.from_file(fname)
 
     print(my_ig2)

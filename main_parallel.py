@@ -22,7 +22,7 @@ Lorenzo Pattelli (INRiM, Italy), l.pattelli@inrim.it
 
 
 main_parallel.py:
-Cycles through ERA5 datasets and calcuates fluxes for each pixel and timesteps
+Cycles through ERA5 datasets and calculates fluxes for each pixel and timesteps
 saves results on netCDF4 files.
 """
 
@@ -54,12 +54,13 @@ def process_one_timestep(atmosphere, cloud):
         rrtm_results = rrtm.run.run_and_read_results(atmosphere, cloud)
     except Exception as e:
         rrtm_results = None
-        logger.error("RRTM error for %s", atm.description)
+        logger.error("RRTM error for %s", atmosphere.description)
         logger.error("%s", e)
     return rrtm_results
 
 
-config = json.load(open(sys.argv[1]))
+with open(sys.argv[1]) as config_file:
+    config = json.load(config_file)
 myplace = config["label"]
 mydates = config["dates"]
 
